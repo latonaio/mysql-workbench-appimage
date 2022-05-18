@@ -1,0 +1,40 @@
+version: 1
+script:
+  - rm -rf AppDir | true
+  - mkdir AppDir
+AppDir:
+  app_info:
+    id: mysql-workbench
+    name: MySQL Workbench
+    icon: mysql-workbench
+    version: "{{version}}"
+    exec: bin/bash
+    exec_args: $APPDIR/usr/bin/mysql-workbench $@
+  runtime:
+    env:
+      # workaround for catchsegv
+      WB_DEBUG: " "
+      WB_DEST_DIR: "$APPDIR"
+  pacman:
+    Architecture: auto
+    repositories:
+      core:
+        - "{{mirror}}"
+      extra:
+        - "{{mirror}}"
+      community:
+        - "{{mirror}}"
+    include:
+      - mysql-workbench
+      - perl
+      - wayland
+  files:
+    exclude:
+      - usr/share/man
+      - usr/share/doc/*/README.*
+      - usr/share/doc/*/changelog.*
+      - usr/share/doc/*/NEWS.*
+      - usr/share/doc/*/TODO.*
+AppImage:
+  arch: "{{arch}}"
+  file_name: "mysql-workbench-{{version}}-{{arch}}.AppImage"
